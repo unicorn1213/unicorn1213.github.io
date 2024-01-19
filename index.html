@@ -1,12 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-      <meta charset="utF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <beta http-equiv="X-UA-Compatible" content="ie=edge">
-      <title>Document</title>
-    </head>
-    <body>
-      <h1>富寶寶們，進攻！</h1>
-    </body>
-  </html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>退休金計算器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>退休金計算器(月配息再存入)</h2>
+    <form id="annuityForm">
+        <label for="age">年齡：</label>
+        <input type="number" id="age" required>
+        <label for="retiredage">預計退休年齡：</label>
+        <input type="number" id="retiredage" required>
+        <label for="principal">本金：</label>
+        <input type="number" id="principal" required>
+        <label for="monthlysaved">每月可存入金額：</label>
+        <input type="number" id="monthlysaved" required>
+        <label for="interestRate">年利率（%）：</label>
+        <input type="number" id="interestRate" required>
+        <button type="button" onclick="calculateAnnuity()">計算</button>
+    </form>
+    <div id="totalsaved"></div>
+    <div id="total"></div>
+    <div id="monthlygive"></div>
+
+    <script>
+        function calculateAnnuity() {
+            var age = parseFloat(document.getElementById('age').value);
+            var retiredage = parseFloat(document.getElementById('retiredage').value);
+            var principal = parseFloat(document.getElementById('principal').value);
+            var monthlysaved = parseFloat(document.getElementById('monthlysaved').value);
+            var interestRate = parseFloat(document.getElementById('interestRate').value) / 100 / 12;
+
+            var periods = (retiredage - age) * 12;
+            var totalsaved = principal + periods * monthlysaved;
+            var rate = Math.pow(1+interestRate, periods);
+            var annuity = principal * rate + monthlysaved * (rate - 1) / interestRate;
+
+            var RDtotalsaved = Math.floor(totalsaved);
+            var RDannuity = Math.floor(annuity);
+            var RDmonthlygive = Math.floor(annuity * interestRate);
+
+            document.getElementById('totalsaved').innerHTML = '<p>共存入：' + RDtotalsaved.toLocaleString() + '</p>';
+            document.getElementById('total').innerHTML = '<p>退休時的本利和：' + RDannuity.toLocaleString() + '</p>';
+            document.getElementById('monthlygive').innerHTML = '<p>每月可領：' + RDmonthlygive.toLocaleString() + '</p>';
+        }
+    </script>
+</body>
+</html>
