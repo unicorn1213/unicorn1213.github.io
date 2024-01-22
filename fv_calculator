@@ -32,7 +32,8 @@
     </style>
 </head>
 <body>
-    <h2>退休金計算器(月配息再存入)</h2>
+    <h2>退休金計算器</h2>
+    <h2>(月配息再存入版)</h2>
     <form id="annuityForm">
         <label for="age">年齡：</label>
         <input type="number" id="age" required>
