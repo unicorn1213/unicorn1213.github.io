@@ -50,6 +50,7 @@
     <div id="totalsaved"></div>
     <div id="total"></div>
     <div id="monthlygive"></div>
+    <div id="author"></div>
 
     <script>
         function calculateAnnuity() {
@@ -71,6 +72,7 @@
             document.getElementById('totalsaved').innerHTML = '<p>共存入：' + RDtotalsaved.toLocaleString() + '</p>';
             document.getElementById('total').innerHTML = '<p>退休時的本利和：' + RDannuity.toLocaleString() + '</p>';
             document.getElementById('monthlygive').innerHTML = '<p>每月可領：' + RDmonthlygive.toLocaleString() + '</p>';
+            document.getElementById('author').innerHTML = '<p>by 逆襲者團隊' + '</p>';
         }
     </script>
 </body>
