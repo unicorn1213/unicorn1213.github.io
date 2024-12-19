@@ -39,7 +39,7 @@
         <input type="number" id="age" required>
         <label for="retiredage">預計退休年齡：</label>
         <input type="number" id="retiredage" required>
-        <label for="principal">本金：</label>
+        <label for="principal">本金：(以萬為單位）</label>
         <input type="number" id="principal" required>
         <label for="monthlysaved">每月可存入金額：</label>
         <input type="number" id="monthlysaved" required>
@@ -50,12 +50,13 @@
     <div id="totalsaved"></div>
     <div id="total"></div>
     <div id="monthlygive"></div>
+    <div id="author"></div>
 
     <script>
         function calculateAnnuity() {
             var age = parseFloat(document.getElementById('age').value);
             var retiredage = parseFloat(document.getElementById('retiredage').value);
-            var principal = parseFloat(document.getElementById('principal').value);
+            var principal = parseFloat(document.getElementById('principal').value) * 10000;
             var monthlysaved = parseFloat(document.getElementById('monthlysaved').value);
             var interestRate = parseFloat(document.getElementById('interestRate').value) / 100 / 12;
 
@@ -71,6 +72,7 @@
             document.getElementById('totalsaved').innerHTML = '<p>共存入：' + RDtotalsaved.toLocaleString() + '</p>';
             document.getElementById('total').innerHTML = '<p>退休時的本利和：' + RDannuity.toLocaleString() + '</p>';
             document.getElementById('monthlygive').innerHTML = '<p>每月可領：' + RDmonthlygive.toLocaleString() + '</p>';
+            document.getElementById('author').innerHTML = '<p>by 逆襲者' + '</p>';
         }
     </script>
 </body>
