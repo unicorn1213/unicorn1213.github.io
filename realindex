@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>目錄網頁</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        main {
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+        }
+        a {
+            text-decoration: none;
+            color: #4CAF50;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>目錄網頁</h1>
+    </header>
+    <main>
+        <p>請點擊以下連結以開啟對應的 GitHub 網頁：</p>
+        <ul>
+            <li><a href="https://github.com/user/repo1" target="_blank">範例網頁 1</a></li>
+            <li><a href="https://github.com/user/repo2" target="_blank">範例網頁 2</a></li>
+            <li><a href="https://github.com/user/repo3" target="_blank">範例網頁 3</a></li>
+        </ul>
+    </main>
+</body>
+</html>
