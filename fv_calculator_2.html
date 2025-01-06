@@ -67,7 +67,7 @@
             var annualRate = parseFloat(document.getElementById('interestRate').value) / 100 || 0;
 
             // 驗證輸入數據有效性
-            if (age <= 0 || retiredage <= age || principal < 0 || monthlysaved < 0 || annualRate < 0) {
+            if (age <= 0 || principal < 0 || monthlysaved < 0 || annualRate < 0) {
                 document.getElementById('result').innerHTML = '<p style="color: red;">請輸入有效的數據！</p>';
                 return;
             }
