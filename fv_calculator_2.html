@@ -81,24 +81,24 @@
             var rate = Math.pow(1 + interestRate, periods);
             var annuity = principal * rate + monthlysaved * (rate - 1) / interestRate; // 本利和
 
-            var RDtotalsaved = Math.floor(totalsaved);
-            var RDannuity = Math.floor(annuity);
-            var RDmonthlygivewithout = Math.floor(totalsaved * interestRate);
-            var RDmonthlygive = Math.floor(annuity * interestRate);
+            totalsaved = Math.floor(totalsaved);
+            annuity = Math.floor(annuity);
+            monthlygivewithout = Math.floor(totalsaved * interestRate);
+            monthlygive = Math.floor(annuity * interestRate);
 
             // 結果顯示
             var resultHTML = `
-                <p>共存入：${RDtotalsaved.toLocaleString()} 元</p>
+                <p>共存入：${totalsaved.toLocaleString()} 元</p>
             `;
             if (reinvest === 'yes') {  
                 resultHTML += `
-                    <p>退休時的本利和：${RDannuity.toLocaleString()} 元</p>
-                    <p>每月可領（投入月配息）：${RDmonthlygive.toLocaleString()} 元</p>
+                    <p>退休時的本利和：${annuity.toLocaleString()} 元</p>
+                    <p>每月可領（投入月配息）：${monthlygive.toLocaleString()} 元</p>
                 `;
             } else {
                 resultHTML += `
-                    <p>退休時的本利和：${RDtotalsaved.toLocaleString()} 元</p>
-                    <p>每月可領（未投入月配息）：${RDmonthlygivewithout.toLocaleString()} 元</p>
+                    <p>退休時的本利和：${totalsaved.toLocaleString()} 元</p>
+                    <p>每月可領（未投入月配息）：${monthlygivewithout.toLocaleString()} 元</p>
                 `;
             }
             resultHTML += `<p>by 逆襲者團隊</p>`;
