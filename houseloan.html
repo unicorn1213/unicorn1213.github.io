@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>房貸計算機</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h2 {
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f4f4f4;
+            border-radius: 4px;
+            display: none;  /* 初始隱藏結果 */
+        }
+        .result span {
+            font-weight: bold;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #81D8CF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #3aa7b8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>房貸計算機</h2>
+        <div class="form-group">
+            <label for="loanAmount">貸款金額 (萬元)</label>
+            <input type="number" id="loanAmount" required>
+        </div>
+        <div class="form-group">
+            <label for="loanTerm">貸款年限 (年)</label>
+            <input type="number" id="loanTerm" required>
+        </div>
+        <div class="form-group">
+            <label for="gracePeriod">寬限期 (年)</label>
+            <input type="number" id="gracePeriod" required>
+        </div>
+        <div class="form-group">
+            <label for="interestRate">房貸利率 (%)</label>
+            <input type="number" id="interestRate" step="0.1" required>
+        </div>
+        <button onclick="calculateMortgage()">計算</button>
+
+        <div class="result" id="result">
+            <div id="output"></div>
+        </div>
+    </div>
+
+    <script>
+       function calculateMortgage() {
+    const loanAmount = parseFloat(document.getElementById('loanAmount').value) * 10000;
+    const loanTerm = parseInt(document.getElementById('loanTerm').value);
+    const gracePeriod = parseInt(document.getElementById('gracePeriod').value);
+    const interestRate = parseFloat(document.getElementById('interestRate').value) / 100;
+
+    if (isNaN(loanAmount) || isNaN(loanTerm) || isNaN(interestRate)) {
+        alert('請輸入所有必要的數據！');
+        return;
+    }
+
+    // 總貸款期數
+    const totalMonths = loanTerm * 12;
+
+    // 房貸年利率轉換為月利率
+    const monthlyRate = interestRate / 12;
+
+    // 計算月繳金額（等額本息公式）
+    let monthlyPayment = 0;
+    if (monthlyRate > 0) {
+        monthlyPayment = (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -totalMonths));
+    } else {
+        monthlyPayment = loanAmount / totalMonths;
+    }
+    monthlyPayment = Math.round( monthlyPayment);
+    // 計算寬限期後的月繳金額
+    const totalMonthsAfterGrace = (loanTerm - gracePeriod) * 12;
+    let paymentAfterGrace = 0;
+    if (monthlyRate > 0) {
+        paymentAfterGrace = (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -totalMonthsAfterGrace));
+    } else {
+        paymentAfterGrace = loanAmount / totalMonthsAfterGrace;
+    }
+    paymentAfterGrace = Math.round(paymentAfterGrace);
+
+    // 如果有寬限期
+    let resultHtml = '';
+    if (gracePeriod > 0) {
+        // 計算寬限期內只還利息的情況
+        const gracePayment = loanAmount * monthlyRate;
+
+        const totalGracePeriodPayment = Math.round(gracePayment) * gracePeriod * 12; // 寬限期總支付金額
+        const totalPaymentAfterGrace = paymentAfterGrace * totalMonthsAfterGrace; // 寬限期後總支付金額
+        const totalPayment = totalGracePeriodPayment + totalPaymentAfterGrace;
+
+        resultHtml += `<p><span>寬限期間月繳金額：</span>${Math.round(gracePayment).toLocaleString()} 元</p>`;
+        resultHtml += `<p><span>寬限期後月繳金額：</span>${Math.ceil(paymentAfterGrace).toLocaleString()} 元</p>`;
+        resultHtml += `<p><span>總繳金額：</span>${totalPayment.toLocaleString()} 元</p>`;
+    } else {
+        // 如果沒有寬限期，直接顯示月繳金額與總繳金額
+        const totalPayment = monthlyPayment * totalMonths;
+
+        resultHtml += `<p><span>月繳金額：</span>${Math.ceil(monthlyPayment).toLocaleString()} 元</p>`;
+        resultHtml += `<p><span>總繳金額：</span>${Math.ceil(totalPayment).toLocaleString()} 元</p>`;
+    }
+
+    // 顯示計算結果
+    document.getElementById('output').innerHTML = resultHtml;
+    document.getElementById('result').style.display = 'block';  // 顯示結果區域
+}
+    </script>
+
+</body>
+</html>
