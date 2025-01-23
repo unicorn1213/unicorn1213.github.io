@@ -132,10 +132,17 @@
         }
 
         // 每月投入金額
-        const monthlyContribution = numerator / denominator;
+        const monthlyContribution = Math.ceil(numerator / denominator);
+
+        // 計算退休時總共存入的金額
+        const totalContributed = Math.ceil(P + monthlyContribution * t * 12);
 
         // 顯示結果
-        document.getElementById('result').textContent = `月配息已回存的情況下，您每月需要投入的金額是：${Math.ceil(monthlyContribution)} 元`;
+        document.getElementById('result').innerHTML = `
+            <p>月配息已回存的情況下，您每月需要投入的金額是：${monthlyContribution.toLocaleString()} 元</p>
+            <p>退休時總共存入的金額（包括每月投入和目前本金）：${totalContributed.toLocaleString()} 元</p>
+            <p>退休時預計的總資金：${Math.ceil(A).toLocaleString()} 元</p>
+        `;
     }
 </script>
 
