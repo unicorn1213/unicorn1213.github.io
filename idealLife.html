@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>理想生活計算機</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .calculator {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            max-width: 100%;
+        }
+        h1 {
+            text-align: center;
+        }
+        .input-group {
+            margin-bottom: 10px;
+        }
+        label {
+            font-size: 14px;
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #81D8CF;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            width: 100%;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color:#3aa7b8;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator">
+    <h1>理想生活計算機</h1>
+    <div class="input-group">
+        <label for="currentAge">目前年齡：</label>
+        <input type="number" id="currentAge" required>
+    </div>
+    <div class="input-group">
+        <label for="retirementAge">預計退休年齡：</label>
+        <input type="number" id="retirementAge" required>
+    </div>
+    <div class="input-group">
+        <label for="desiredIncome">退休時想要的月配息金額（萬元）：</label>
+        <input type="number" id="desiredIncome" required>
+    </div>
+    <div class="input-group">
+        <label for="rateOfReturn">年化報酬率（%）：</label>
+        <input type="number" id="rateOfReturn" required>
+    </div>
+    <div class="input-group">
+        <label for="currentPrincipal">目前可投入的本金（萬元）：</label>
+        <input type="number" id="currentPrincipal" required>
+    </div>
+    <button onclick="calculateContribution()">計算每月需投入金額</button>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+    function calculateContribution() {
+        // 讀取輸入的值
+        const currentAge = parseInt(document.getElementById('currentAge').value);
+        const retirementAge = parseInt(document.getElementById('retirementAge').value);
+        const desiredIncome = parseFloat(document.getElementById('desiredIncome').value) * 10000;
+        const rateOfReturn = parseFloat(document.getElementById('rateOfReturn').value) / 100;
+        const currentPrincipal = parseFloat(document.getElementById('currentPrincipal').value) * 10000;
+
+        // 驗證輸入值是否有效
+        if (isNaN(currentAge) || isNaN(retirementAge) || isNaN(desiredIncome) || isNaN(rateOfReturn) || isNaN(currentPrincipal)) {
+            alert("請確保所有欄位都已填寫正確的數字！");
+            return;
+        }
+
+        // 計算距離退休的年數
+        const yearsToRetire = retirementAge - currentAge;
+        if (yearsToRetire <= 0) {
+            alert("退休年齡必須大於目前年齡！");
+            return;
+        }
+
+        // 計算退休時所需的總本金
+        const totalRequiredPrincipal = desiredIncome * 12 / rateOfReturn;
+
+        // 複利公式計算每月需要投入的金額
+        const n = 12;  // 每年複利次數
+        const r = rateOfReturn;
+        const t = yearsToRetire;
+        const P = currentPrincipal;
+        const A = totalRequiredPrincipal;
+
+        const numerator = A - P * Math.pow(1 + r / n, n * t);
+        const denominator = (Math.pow(1 + r / n, n * t) - 1) / (r / n);
+
+        // 當分母為零時，避免除以零的錯誤
+        if (denominator === 0) {
+            alert("計算出現錯誤，請檢查輸入值！");
+            return;
+        }
+
+        // 每月投入金額
+        const monthlyContribution = numerator / denominator;
+
+        // 顯示結果
+        document.getElementById('result').textContent = `您每月需要投入的金額是：${Math.ceil(monthlyContribution)} 元`;
+    }
+</script>
+
+</body>
+</html>
