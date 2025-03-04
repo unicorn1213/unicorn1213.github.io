@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>理想生活計算機</title>
+    <title>房貸計算機</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -34,8 +34,8 @@
             display: block;
             margin-bottom: 5px;
         }
-        input, select {
-            width: 100%;
+        input {
+            width: 95%;
             padding: 8px;
             margin: 5px 0 15px 0;
             border: 1px solid #ccc;
@@ -51,7 +51,7 @@
             cursor: pointer;
         }
         button:hover {
-            background-color:#3aa7b8;
+            background-color: #3aa7b8;
         }
         .result {
             margin-top: 20px;
@@ -64,85 +64,84 @@
 <body>
 
 <div class="calculator">
-    <h1>理想生活計算機</h1>
+    <h1>房貸計算機</h1>
     <div class="input-group">
-        <label for="currentAge">目前年齡：</label>
-        <input type="number" id="currentAge" required>
+        <label for="loanAmount">貸款金額 (萬元)：</label>
+        <input type="number" id="loanAmount" required>
     </div>
     <div class="input-group">
-        <label for="retirementAge">預計退休年齡：</label>
-        <input type="number" id="retirementAge" required>
+        <label for="loanTerm">貸款年限 (年)：</label>
+        <input type="number" id="loanTerm" required>
     </div>
     <div class="input-group">
-        <label for="desiredIncome">退休時想要的月配息金額（萬元）：</label>
-        <input type="number" id="desiredIncome" required>
+        <label for="gracePeriod">寬限期 (年)：</label>
+        <input type="number" id="gracePeriod" required>
     </div>
     <div class="input-group">
-        <label for="rateOfReturn">年化報酬率（%）：</label>
-        <input type="number" id="rateOfReturn" required>
+        <label for="interestRate">貸款利率 (%)：</label>
+        <input type="number" id="interestRate" step="0.1" required>
     </div>
-    <div class="input-group">
-        <label for="currentPrincipal">目前可投入的本金（萬元）：</label>
-        <input type="number" id="currentPrincipal" required>
-    </div>
-    <button onclick="calculateContribution()">計算每月需投入金額</button>
+    <button onclick="calculateMortgage()">計算</button>
 
     <div class="result" id="result"></div>
 </div>
 
 <script>
-    function calculateContribution() {
-        // 讀取輸入的值
-        const currentAge = parseInt(document.getElementById('currentAge').value);
-        const retirementAge = parseInt(document.getElementById('retirementAge').value);
-        const desiredIncome = parseFloat(document.getElementById('desiredIncome').value) * 10000;
-        const rateOfReturn = parseFloat(document.getElementById('rateOfReturn').value) / 100;
-        const currentPrincipal = parseFloat(document.getElementById('currentPrincipal').value) * 10000;
+    function calculateMortgage() {
+        const loanAmount = parseFloat(document.getElementById('loanAmount').value) * 10000;
+        const loanTerm = parseInt(document.getElementById('loanTerm').value);
+        const gracePeriod = parseInt(document.getElementById('gracePeriod').value);
+        const interestRate = parseFloat(document.getElementById('interestRate').value) / 100;
 
-        // 驗證輸入值是否有效
-        if (isNaN(currentAge) || isNaN(retirementAge) || isNaN(desiredIncome) || isNaN(rateOfReturn) || isNaN(currentPrincipal)) {
-            alert("請確保所有欄位都已填寫正確的數字！");
+        if (isNaN(loanAmount) || isNaN(loanTerm) || isNaN(interestRate)) {
+            alert('請輸入所有必要的數據！');
             return;
         }
 
-        // 計算距離退休的年數
-        const yearsToRetire = retirementAge - currentAge;
-        if (yearsToRetire <= 0) {
-            alert("退休年齡必須大於目前年齡！");
-            return;
+        // 總貸款期數
+        const totalMonths = loanTerm * 12;
+
+        // 房貸年利率轉換為月利率
+        const monthlyRate = interestRate / 12;
+
+        // 計算月繳金額（等額本息公式）
+        let monthlyPayment = 0;
+        if (monthlyRate > 0) {
+            monthlyPayment = (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -totalMonths));
+        } else {
+            monthlyPayment = loanAmount / totalMonths;
+        }
+        monthlyPayment = Math.round(monthlyPayment);
+
+        // 計算寬限期後的月繳金額
+        const totalMonthsAfterGrace = (loanTerm - gracePeriod) * 12;
+        let paymentAfterGrace = 0;
+        if (monthlyRate > 0) {
+            paymentAfterGrace = (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -totalMonthsAfterGrace));
+        } else {
+            paymentAfterGrace = loanAmount / totalMonthsAfterGrace;
+        }
+        paymentAfterGrace = Math.round(paymentAfterGrace);
+
+        // 如果有寬限期
+        let resultHtml = '';
+        if (gracePeriod > 0) {
+            const gracePayment = loanAmount * monthlyRate;
+            const totalGracePeriodPayment = Math.round(gracePayment) * gracePeriod * 12; 
+            const totalPaymentAfterGrace = paymentAfterGrace * totalMonthsAfterGrace; 
+            const totalPayment = totalGracePeriodPayment + totalPaymentAfterGrace;
+
+            resultHtml += `<p><span>寬限期間月繳金額：</span>${Math.round(gracePayment).toLocaleString()} 元</p>`;
+            resultHtml += `<p><span>寬限期後月繳金額：</span>${Math.ceil(paymentAfterGrace).toLocaleString()} 元</p>`;
+            resultHtml += `<p><span>總繳金額：</span>${totalPayment.toLocaleString()} 元</p>`;
+        } else {
+            const totalPayment = monthlyPayment * totalMonths;
+            resultHtml += `<p><span>月繳金額：</span>${Math.ceil(monthlyPayment).toLocaleString()} 元</p>`;
+            resultHtml += `<p><span>總繳金額：</span>${Math.ceil(totalPayment).toLocaleString()} 元</p>`;
         }
 
-        // 計算退休時所需的總本金
-        const totalRequiredPrincipal = desiredIncome * 12 / rateOfReturn;
-
-        // 複利公式計算每月需要投入的金額
-        const n = 12;  // 每年複利次數
-        const r = rateOfReturn;
-        const t = yearsToRetire;
-        const P = currentPrincipal;
-        const A = totalRequiredPrincipal;
-
-        const numerator = A - P * Math.pow(1 + r / n, n * t);
-        const denominator = (Math.pow(1 + r / n, n * t) - 1) / (r / n);
-
-        // 當分母為零時，避免除以零的錯誤
-        if (denominator === 0) {
-            alert("計算出現錯誤，請檢查輸入值！");
-            return;
-        }
-
-        // 每月投入金額
-        const monthlyContribution = Math.ceil(numerator / denominator);
-
-        // 計算退休時總共存入的金額
-        const totalContributed = Math.ceil(P + monthlyContribution * t * 12);
-
-        // 顯示結果
-        document.getElementById('result').innerHTML = `
-            <p>月配息已回存的情況下，您每月需要投入的金額是：${monthlyContribution.toLocaleString()} 元</p>
-            <p>退休時總共存入的金額（包括每月投入和目前本金）：${totalContributed.toLocaleString()} 元</p>
-            <p>退休時預計的總資金：${Math.ceil(A).toLocaleString()} 元</p>
-        `;
+        // 顯示計算結果
+        document.getElementById('result').innerHTML = resultHtml;
     }
 </script>
 
