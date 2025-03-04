@@ -56,7 +56,6 @@
         .result {
             margin-top: 20px;
             font-size: 16px;
-          /*  font-weight: bold;*/
             color: #333;
         }
     </style>
@@ -140,8 +139,8 @@
         // 顯示結果
         document.getElementById('result').innerHTML = `
             <p>月配息已回存的情況下，您每月需要投入的金額是：${monthlyContribution.toLocaleString()} 元</p>
-            <p>退休時總共存入的金額（目前本金+每月投入）：${totalContributed.toLocaleString()} 元</p>
-            <p>退休時預計的總資金：${Math.ceil(A).toLocaleString()} 元</p>
+            <p>退休時總存金額（目前本金+每月投入）：${totalContributed.toLocaleString()} 元</p>
+            <p>退休時的總資金：${Math.ceil(A).toLocaleString()} 元</p>
         `;
     }
 </script>
