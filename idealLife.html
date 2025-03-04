@@ -23,19 +23,19 @@
             width: 400px;
             max-width: 80%;
         }
-        h1 {
+        h2 {
             text-align: center;
         }
         .input-group {
             margin-bottom: 10px;
-        }
+        
         label {
             font-size: 14px;
             display: block;
             margin-bottom: 5px;
         }
         input, select {
-            width: 100%;
+            width: 95%;
             padding: 8px;
             margin: 5px 0 15px 0;
             border: 1px solid #ccc;
@@ -56,7 +56,7 @@
         .result {
             margin-top: 20px;
             font-size: 16px;
-            font-weight: bold;
+          /*  font-weight: bold;*/
             color: #333;
         }
     </style>
@@ -64,7 +64,7 @@
 <body>
 
 <div class="calculator">
-    <h1>理想生活計算機</h1>
+    <h2>理想生活計算機</h2>
     <div class="input-group">
         <label for="currentAge">目前年齡：</label>
         <input type="number" id="currentAge" required>
@@ -138,11 +138,11 @@
         const totalContributed = Math.ceil(P + monthlyContribution * t * 12);
 
         // 顯示結果
-        document.getElementById('result').innerHTML = 
+        document.getElementById('result').innerHTML = `
             <p>月配息已回存的情況下，您每月需要投入的金額是：${monthlyContribution.toLocaleString()} 元</p>
             <p>退休時總共存入的金額（目前本金+每月投入）：${totalContributed.toLocaleString()} 元</p>
             <p>退休時預計的總資金：${Math.ceil(A).toLocaleString()} 元</p>
-        ;
+        `;
     }
 </script>
 
