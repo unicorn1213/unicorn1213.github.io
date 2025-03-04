@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,103 +7,141 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 50px;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
-        form {
-            max-width: 400px;
-            margin: 0 auto;
+        .calculator {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            max-width: 80%;
+        }
+        h1 {
+            text-align: center;
+            font-size: 24px;
+        }
+        .input-group {
+            margin-bottom: 10px;
+        }
+        label {
+            font-size: 14px;
+            display: block;
+            margin-bottom: 5px;
         }
         input, select {
             width: 100%;
             padding: 8px;
-            margin: 5px 0;
-            box-sizing: border-box;
+            margin: 5px 0 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
         button {
             background-color: #81D8CF;
             color: white;
-            padding: 10px 15px;
-            margin: 8px 0;
+            padding: 10px;
             border: none;
             border-radius: 4px;
+            width: 100%;
             cursor: pointer;
         }
         button:hover {
-            background-color: #3aa7b8;
+            background-color:#3aa7b8;
         }
-        .result p {
-            margin: 10px 0;
+        .result {
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
         }
     </style>
 </head>
 <body>
-    <h2>退休金計算器</h2>
-    <form id="annuityForm">
+
+<div class="calculator">
+    <h1>退休金計算器</h1>
+    <div class="input-group">
         <label for="reinvest">是否再投入月配息：</label>
         <select id="reinvest">
             <option value="yes">是</option>
             <option value="no">否</option>
         </select>
+    </div>
+    <div class="input-group">
         <label for="age">年齡：</label>
         <input type="number" id="age" required>
+    </div>
+    <div class="input-group">
         <label for="retiredage">預計退休年齡：</label>
         <input type="number" id="retiredage" required>
+    </div>
+    <div class="input-group">
         <label for="principal">本金：(以萬為單位）</label>
         <input type="number" id="principal" required>
+    </div>
+    <div class="input-group">
         <label for="monthlysaved">每月可存入金額：</label>
         <input type="number" id="monthlysaved" required>
+    </div>
+    <div class="input-group">
         <label for="interestRate">年利率（%）：</label>
         <input type="number" id="interestRate" required>
-        <button type="button" onclick="calculateAnnuity()">計算</button>
-    </form>
+    </div>
+    <button type="button" onclick="calculateAnnuity()">計算</button>
 
-    <section id="result" class="result"></section>
+    <div class="result" id="result"></div>
+</div>
 
-    <script>
-        function calculateAnnuity() {
-            var reinvest = document.getElementById('reinvest').value;
-            var age = parseFloat(document.getElementById('age').value) || 0;
-            var retiredage = parseFloat(document.getElementById('retiredage').value) || 0;
-            var principal = parseFloat(document.getElementById('principal').value) * 10000 || 0;
-            var monthlysaved = parseFloat(document.getElementById('monthlysaved').value) || 0;
-            var annualRate = parseFloat(document.getElementById('interestRate').value) / 100 || 0;
+<script>
+    function calculateAnnuity() {
+        var reinvest = document.getElementById('reinvest').value;
+        var age = parseFloat(document.getElementById('age').value) || 0;
+        var retiredage = parseFloat(document.getElementById('retiredage').value) || 0;
+        var principal = parseFloat(document.getElementById('principal').value) * 10000 || 0;
+        var monthlysaved = parseFloat(document.getElementById('monthlysaved').value) || 0;
+        var annualRate = parseFloat(document.getElementById('interestRate').value) / 100 || 0;
 
-            // 驗證輸入數據有效性
-            if (age < 0 || principal < 0 || monthlysaved < 0 || annualRate < 0) {
-                document.getElementById('result').innerHTML = '<p style="color: red;">請輸入有效的數據！</p>';
-                return;
-            }
-
-            var periods = (retiredage - age) * 12; // 期數（月）
-            var interestRate = annualRate / 12;   // 月利率
-            var totalsaved = principal + periods * monthlysaved; // 總存入金額
-            var rate = Math.pow(1 + interestRate, periods);
-            var annuity = principal * rate + monthlysaved * (rate - 1) / interestRate; // 本利和
-
-            totalsaved = Math.floor(totalsaved);
-            annuity = Math.floor(annuity);
-            monthlygivewithout = Math.floor(totalsaved * interestRate);
-            monthlygive = Math.floor(annuity * interestRate);
-
-            // 結果顯示
-            var resultHTML = `
-                <p>共存入：${totalsaved.toLocaleString()} 元</p>
-            `;
-            if (reinvest === 'yes') {  
-                resultHTML += `
-                    <p>退休時的本利和：${annuity.toLocaleString()} 元</p>
-                    <p>每月可領（投入月配息）：${monthlygive.toLocaleString()} 元</p>
-                `;
-            } else {
-                resultHTML += `
-                    <p>退休時的本利和：${totalsaved.toLocaleString()} 元</p>
-                    <p>每月可領（未投入月配息）：${monthlygivewithout.toLocaleString()} 元</p>
-                `;
-            }
-            resultHTML += `<p>by 逆襲者團隊</p>`;
-            document.getElementById('result').innerHTML = resultHTML;
+        // 驗證輸入數據有效性
+        if (age < 0 || principal < 0 || monthlysaved < 0 || annualRate < 0) {
+            document.getElementById('result').innerHTML = '<p style="color: red;">請輸入有效的數據！</p>';
+            return;
         }
-    </script>
+
+        var periods = (retiredage - age) * 12; // 期數（月）
+        var interestRate = annualRate / 12;   // 月利率
+        var totalsaved = principal + periods * monthlysaved; // 總存入金額
+        var rate = Math.pow(1 + interestRate, periods);
+        var annuity = principal * rate + monthlysaved * (rate - 1) / interestRate; // 本利和
+
+        totalsaved = Math.floor(totalsaved);
+        annuity = Math.floor(annuity);
+        monthlygivewithout = Math.floor(totalsaved * interestRate);
+        monthlygive = Math.floor(annuity * interestRate);
+
+        // 結果顯示
+        var resultHTML = `
+            <p>共存入：${totalsaved.toLocaleString()} 元</p>
+        `;
+        if (reinvest === 'yes') {  
+            resultHTML += `
+                <p>退休時的本利和：${annuity.toLocaleString()} 元</p>
+                <p>每月可領（投入月配息）：${monthlygive.toLocaleString()} 元</p>
+            `;
+        } else {
+            resultHTML += `
+                <p>退休時的本利和：${totalsaved.toLocaleString()} 元</p>
+                <p>每月可領（未投入月配息）：${monthlygivewithout.toLocaleString()} 元</p>
+            `;
+        }
+        document.getElementById('result').innerHTML = resultHTML;
+    }
+</script>
+
 </body>
 </html>
